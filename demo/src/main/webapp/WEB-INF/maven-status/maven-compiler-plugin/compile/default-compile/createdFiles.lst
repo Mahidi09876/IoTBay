@@ -1,0 +1,4 @@
+model\ShoppingCart.class
+model\Transaction.class
+model\Order.class
+model\User.class
