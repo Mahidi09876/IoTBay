@@ -1,0 +1,5 @@
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaeeLinks to an external site."
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanceLinks to an external site."
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaeeLinks to an external site. http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsdLinks to an external site.">
+    <display-name>IoTBay</display-name>
+</web-app>
