@@ -1,23 +1,55 @@
 package model;
+
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ShoppingCart implements Serializable {
-    private String user;
+    private int cartId;
+    private int userId;
+    private Timestamp createdAt;
+    private String status;
     private Map<Integer, Integer> items;
 
-    public ShoppingCart(String user) {
-        this.user = user;
+    public ShoppingCart(int cartId, int userId, Timestamp createdAt, String status) {
+        this.cartId = cartId;
+        this.userId = userId;
+        this.createdAt = createdAt;
+        this.status = status;
         this.items = new HashMap<>();
     }
 
-    public String getUser() {
-        return user;
+    public int getCartId() {
+        return cartId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Map<Integer, Integer> getItems() {
@@ -49,7 +81,10 @@ public class ShoppingCart implements Serializable {
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                "user='" + user + '\'' +
+                "cartId=" + cartId +
+                ", userId=" + userId +
+                ", createdAt=" + createdAt +
+                ", status='" + status + '\'' +
                 ", items=" + items +
                 '}';
     }
