@@ -5,7 +5,7 @@ import java.util.logging.*;
 import model.dao.*;
 import model.*;
 
-public class TestDB {
+public class CartDisplayTest {
 
     private static Scanner in = new Scanner(System.in);
 
@@ -17,14 +17,8 @@ public class TestDB {
 
             Connection conn = connector.openConnection();
 
-            DBManager db = new DBManager(conn);
+            CartDAO cartDAO = new CartDAO(conn);
             
-            User user = db.findUser("Ba@gmail.com", "1234");
-            if (user != null) {
-                System.out.println("User found: " + user.toString());
-            } else {
-                System.out.println("User not found.");
-            }
             
             connector.closeConnection();
 

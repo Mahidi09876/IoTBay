@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.dao.*;
 
-@WebServlet("/ConnServlet")
+// @WebServlet("/ConnServlet")
 public class ConnServlet extends HttpServlet {
 
     private DBConnector db;
@@ -34,6 +34,9 @@ public class ConnServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        System.out.println("ConnServlet.init() called");
+
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         conn = db.openConnection();

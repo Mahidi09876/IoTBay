@@ -7,6 +7,7 @@ model\dao\DBConnector.class
 model\Device.class
 controller\OrderServlet.class
 model\Order.class
+controller\CartDisplayTest.class
 controller\TestDB.class
 model\dao\DBManager.class
 model\Transaction.class
