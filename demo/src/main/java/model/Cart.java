@@ -5,14 +5,14 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShoppingCart implements Serializable {
+public class Cart implements Serializable {
     private int cartId;
     private int userId;
     private Timestamp createdAt;
     private String status;
     private Map<Integer, Integer> items;
 
-    public ShoppingCart(int cartId, int userId, Timestamp createdAt, String status) {
+    public Cart(int cartId, int userId, Timestamp createdAt, String status) {
         this.cartId = cartId;
         this.userId = userId;
         this.createdAt = createdAt;

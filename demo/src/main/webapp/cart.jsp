@@ -1,12 +1,12 @@
-<%@ page import="model.Device" %>
-<%@ page import="model.dao.DBManager" %>
+<%@ page import="model.*" %>
+<%@ page import="model.dao.*" %>
 <%@ page import="java.util.*" %>
 <%
-    DBManager manager = (DBManager) session.getAttribute("manager");
+    CartDAO cartDAO = (CartDAO) session.getAttribute("manager");
     Integer cartId = (Integer) session.getAttribute("cartId");
-    List<Device> items = new ArrayList<>();
+    Map<Integer, Integer> items = new HashMap<>();
     if (cartId != null) {
-        items = manager.getCartItems(cartId); // Add a method in DBManager to fetch cart items
+        items = cartDAO.getCartItems(cartId); 
     }
 %>
 
@@ -25,9 +25,29 @@
             <th>Total</th>
             <th>Actions</th>
         </tr>
+
         <%
-            for (Device item : items) {
+        for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+            Integer productId = entry.getKey();
+            Integer quantity = entry.getValue();
         %>
+        <tr>
+            <td><%= productId %></td>
+            <td><%= quantity %></td>
+            <%-- <td><%= cartDAO.getProductPrice(productId) %></td>
+            <td><%= cartDAO.getProductPrice(productId) * quantity %></td> --%>
+            <td>
+            <form method="post" style="display:inline;">
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="productId" value="<%= productId %>">
+                <button type="submit">Remove</button>
+            </form>
+            </td>
+        </tr>
+        <%
+            }
+        %>
+
         <%-- <tr>
             <td><%= item.getProductId() %></td>
             <td><%= item.getQuantity() %></td>
@@ -41,9 +61,8 @@
                 </form>
             </td>
         </tr> --%>
-        <%
-            }
-        %>
     </table>
+    <jsp:include page="/ConnServlet" flush="true" />
+
 </body>
 </html>

@@ -1,11 +1,12 @@
 controller\LoginServlet.class
+model\dao\CartDAO.class
+model\Cart.class
 controller\ConnServlet.class
 model\dao\DB.class
 model\dao\DBConnector.class
 model\Device.class
 controller\OrderServlet.class
 model\Order.class
-model\ShoppingCart.class
 controller\TestDB.class
 model\dao\DBManager.class
 model\Transaction.class

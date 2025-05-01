@@ -5,15 +5,15 @@ public class Device {
     private String name;
     private String type;
     private double price;
-    private int quantity;
+    private int stock;
 
     // Constructor
-    public Device(int id, String name, String type, double price, int quantity) {
+    public Device(int id, String name, String type, double price, int stock) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.price = price;
-        this.quantity = quantity;
+        this.stock = stock;
     }
 
     // Getters and Setters
@@ -49,12 +49,12 @@ public class Device {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getStock() {
+        return stock;
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        this.stock = quantity;
     }
 
     // toString method
@@ -65,7 +65,7 @@ public class Device {
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", price=" + price +
-                ", quantity=" + quantity +
+                ", stock=" + stock +
                 '}';
     }
     
