@@ -26,4 +26,15 @@
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CartServlet</servlet-name>
+        <servlet-class>controller.CartServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CartServlet</servlet-name>
+        <url-pattern>/CartServlet</url-pattern>
+    </servlet-mapping>
+
 </web-app>

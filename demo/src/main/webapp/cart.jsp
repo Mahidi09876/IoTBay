@@ -5,7 +5,8 @@
 
 <%
     CartDAO cartDAO = (CartDAO) session.getAttribute("cartDAO");
-    Integer cartId = (Integer) session.getAttribute("cartId");
+    DeviceDAO deviceDAO = (DeviceDAO) session.getAttribute("deviceDAO");
+    Integer cartId = (Integer) session.getAttribute("cartId"); // Should be userID, get cartID from userID
     Map<Integer, Integer> items = new HashMap<>();
 
     // if (cartId != null) {
@@ -53,18 +54,35 @@
 
         <%
         for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
-            Integer productId = entry.getKey();
+            Device cartItem = deviceDAO.getDeviceById(entry.getKey());
             Integer quantity = entry.getValue();
         %>
         <tr>
-            <td><%= productId %></td>
-            <td><%= quantity %></td>
-            <%-- <td><%= cartDAO.getProductPrice(productId) %></td>
-            <td><%= cartDAO.getProductPrice(productId) * quantity %></td> --%>
+            <td><%= cartItem.getId() %></td>
             <td>
-            <form method="post" style="display:inline;">
+                <!-- Decrement button -->
+                <form method="POST" action="CartServlet" style="display:inline;">
+                    <input type="hidden" name="action" value="decrement"/>
+                    <input type="hidden" name="cartItemId" value="${cartItem.getId()}"/>
+                    <button type="submit">-</button>
+                </form>
+
+                <!-- Display quantity -->
+                <span><%= quantity %></span>
+
+                <!-- Increment button -->
+                <form method="POST" action="CartServlet" style="display:inline;">
+                    <input type="hidden" name="action" value="increment"/>
+                    <input type="hidden" name="cartItemId" value="${cartItem.getId()}"/>
+                    <button type="submit">+</button>
+                </form>
+            </td>
+            <td><%= cartItem.getPrice() %></td>
+            <td><%= cartItem.getPrice() * quantity %></td>
+            <td>
+            <form action="CartServlet" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="remove">
-                <input type="hidden" name="productId" value="<%= productId %>">
+                <input type="hidden" name="productId" value="<%= cartItem.getId() %>">
                 <button type="submit">Remove</button>
             </form>
             </td>
