@@ -74,7 +74,7 @@ public class CartDAO {
             "SELECT " +
             "    d.device_id, " +
             "    d.device_name, " +
-            "    d.device_type, " +
+            "    d.type, " +
             "    d.unit_price, " +
             "    d.stock, " +
             "    ci.quantity " +
