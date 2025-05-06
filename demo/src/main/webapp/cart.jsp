@@ -6,7 +6,6 @@
 <%
     CartDAO cartDAO = (CartDAO) session.getAttribute("cartDAO");
     DeviceDAO deviceDAO = (DeviceDAO) session.getAttribute("deviceDAO");
-    Integer cartId = (Integer) session.getAttribute("cartId"); // Should be userID, get cartID from userID
     Map<Integer, Integer> items = new HashMap<>();
 
     // if (cartId != null) {
@@ -14,7 +13,8 @@
     //     items = cartDAO.getCartItems(1001); 
     // }
 
-    items = cartDAO.getCartItems(1001); 
+    Integer cartId = cartDAO.getCartIdByUserId(42);
+    items = cartDAO.getCartItems(cartId); 
 
 %>
 
@@ -23,29 +23,13 @@
 <head>
     <title>Shopping Cart</title>
 
-        <script>
-        // Send a GET request to /ConnServlet before loading the page
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/ConnServlet')
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Failed to load ConnServlet:', response.statusText);
-                        return;
-                    }
-                    console.log('ConnServlet loaded successfully');
-                })
-                .catch(error => {
-                    console.error('Error loading ConnServlet:', error);
-                });
-        });
-    </script>
-
 </head>
 <body>
     <h1>Your Cart</h1>
     <table border="1">
         <tr>
             <th>Product</th>
+            <th>Product Name</th>
             <th>Quantity</th>
             <th>Price</th>
             <th>Total</th>
@@ -59,11 +43,14 @@
         %>
         <tr>
             <td><%= cartItem.getId() %></td>
+            <td><%= cartItem.getName() %></td>
             <td>
                 <!-- Decrement button -->
                 <form method="POST" action="CartServlet" style="display:inline;">
                     <input type="hidden" name="action" value="decrement"/>
-                    <input type="hidden" name="cartItemId" value="${cartItem.getId()}"/>
+                    <input type="hidden" name="cartId" value="<%= cartId %>"/>
+                    <input type="hidden" name="cartItemId" value="<%= cartItem.getId() %>"/>
+                    <input type="hidden" name="quantity" value="<%= quantity %>"/>
                     <button type="submit">-</button>
                 </form>
 
@@ -73,7 +60,9 @@
                 <!-- Increment button -->
                 <form method="POST" action="CartServlet" style="display:inline;">
                     <input type="hidden" name="action" value="increment"/>
-                    <input type="hidden" name="cartItemId" value="${cartItem.getId()}"/>
+                    <input type="hidden" name="cartId" value="<%= cartId %>"/>
+                    <input type="hidden" name="cartItemId" value="<%= cartItem.getId() %>"/>
+                    <input type="hidden" name="quantity" value="<%= quantity %>"/>
                     <button type="submit">+</button>
                 </form>
             </td>

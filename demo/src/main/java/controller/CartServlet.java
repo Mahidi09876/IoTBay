@@ -19,14 +19,24 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
+        int cartId = Integer.parseInt(request.getParameter("cartId"));
         int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
         CartDAO cartDAO = (CartDAO) session.getAttribute("cartDAO");
 
-        if (item != null) {
-            // Logic to add item to cart (simplified)
-            session.setAttribute("cart", item);
+        try {
+            if ("increment".equals(action)) {
+                cartDAO.updateCartItem(cartId, cartItemId, quantity + 1);
+                response.sendRedirect("cart.jsp");
+            } else if ("decrement".equals(action)) {
+                cartDAO.updateCartItem(cartId, cartItemId, quantity - 1);
+                response.sendRedirect("cart.jsp");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CartServlet.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServletException("Database update failed", ex);
         }
-        response.sendRedirect("CartServlet");
+
     }
 
 }

@@ -25,6 +25,18 @@ public class CartDAO {
         }
     }
 
+    public Integer getCartIdByUserId(int userId) throws SQLException {
+        String query = "SELECT cart_id FROM cart WHERE user_id = ? AND status = 'ACTIVE'";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("cart_id");
+            }
+            return -1; 
+        }
+    }
+
     public Cart findCart(int cartId) throws SQLException {
         String query = "SELECT * FROM CartItem WHERE cart_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -58,12 +70,12 @@ public class CartDAO {
         }
     }
 
-    public void updateCartItem(int cartId, String productId, int quantity) throws SQLException {
-        String query = "UPDATE CartItem SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+    public void updateCartItem(int cartId, int productId, int quantity) throws SQLException {
+        String query = "UPDATE cartitem SET quantity = ? WHERE cart_id = ? AND device_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, quantity);
             stmt.setInt(2, cartId);
-            stmt.setString(3, productId);
+            stmt.setInt(3, productId);
             stmt.executeUpdate();
         }
     }
