@@ -19,18 +19,18 @@ public class OrderServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        int cartId = Integer.parseInt(request.getParameter("cartId"));
-        int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int orderItemId = Integer.parseInt(request.getParameter("orderItemId"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         OrderDAO orderDAO = (OrderDAO) session.getAttribute("orderDAO");
 
         try {
             if ("increment".equals(action)) {
-                orderDAO.updateOrderItem(cartId, cartItemId, quantity + 1);
-                response.sendRedirect("cart.jsp");
+                orderDAO.updateOrderItem(orderId, orderItemId, quantity + 1);
+                response.sendRedirect("order.jsp");
             } else if ("decrement".equals(action)) {
-                orderDAO.updateOrderItem(cartId, cartItemId, quantity - 1);
-                response.sendRedirect("cart.jsp");
+                orderDAO.updateOrderItem(orderId, orderItemId, quantity - 1);
+                response.sendRedirect("order.jsp");
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);

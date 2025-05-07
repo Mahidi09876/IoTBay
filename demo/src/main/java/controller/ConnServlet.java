@@ -37,9 +37,9 @@ public class ConnServlet extends HttpServlet {
             throws ServletException, IOException {
 
         System.out.println("ConnServlet.init() called");
-
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
+
         conn = db.openConnection();
 
         try {

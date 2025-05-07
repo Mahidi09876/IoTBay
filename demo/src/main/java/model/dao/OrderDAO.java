@@ -1,8 +1,7 @@
 package model.dao;
 import model.*;
 import java.sql.*;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class OrderDAO {
 
@@ -80,12 +79,26 @@ public class OrderDAO {
         }
     }
 
+    public List<Integer> getAllDraftOrderIds(int userId) throws SQLException {
+        String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = 'draft'";
+        List<Integer> orderIds = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    orderIds.add(rs.getInt("order_id"));
+                }
+            }
+        }
+        return orderIds;
+    }
+
     // Returns a list of items in the order with their quantities added to order
     public Map<Integer, Integer> getOrderItems(Integer orderId) throws SQLException {
         String sql = 
             "SELECT " +
             "    d.device_id, " +
-            "    d.device_name, " +
+            "    d.name, " +
             "    d.type, " +
             "    d.unit_price, " +
             "    d.stock, " +
