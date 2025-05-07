@@ -17,7 +17,7 @@ public class CartDisplayTest {
 
             Connection conn = connector.openConnection();
 
-            CartDAO cartDAO = new CartDAO(conn);
+            OrderDAO orderDAO = new OrderDAO(conn);
             
             
             connector.closeConnection();

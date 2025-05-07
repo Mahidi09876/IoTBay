@@ -4,28 +4,28 @@
 <%@ page import="java.util.*" %>
 
 <%
-    CartDAO cartDAO = (CartDAO) session.getAttribute("cartDAO");
+    OrderDAO orderDAO = (OrderDAO) session.getAttribute("orderDAO");
     DeviceDAO deviceDAO = (DeviceDAO) session.getAttribute("deviceDAO");
     Map<Integer, Integer> items = new HashMap<>();
 
-    // if (cartId != null) {
-    //     // items = cartDAO.getCartItems(cartId); 
-    //     items = cartDAO.getCartItems(1001); 
+    // if (orderId != null) {
+    //     // items = orderDAO.getOrderItems(orderId); 
+    //     items = orderDAO.getOrderItems(1001); 
     // }
 
-    Integer cartId = cartDAO.getCartIdByUserId(42);
-    items = cartDAO.getCartItems(cartId); 
+    int orderId = 1;
+    items = orderDAO.getOrderItems(orderId); 
 
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shopping Cart</title>
+    <title>Orders</title>
 
 </head>
 <body>
-    <h1>Your Cart</h1>
+    <h1>Your Orders</h1>
     <table border="1">
         <tr>
             <th>Product</th>
@@ -38,18 +38,18 @@
 
         <%
         for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
-            Device cartItem = deviceDAO.getDeviceById(entry.getKey());
+            Device orderItem = deviceDAO.getDeviceById(entry.getKey());
             Integer quantity = entry.getValue();
         %>
         <tr>
-            <td><%= cartItem.getId() %></td>
-            <td><%= cartItem.getName() %></td>
+            <td><%= orderItem.getId() %></td>
+            <td><%= orderItem.getName() %></td>
             <td>
                 <!-- Decrement button -->
-                <form method="POST" action="CartServlet" style="display:inline;">
+                <form method="POST" action="OrderServlet" style="display:inline;">
                     <input type="hidden" name="action" value="decrement"/>
-                    <input type="hidden" name="cartId" value="<%= cartId %>"/>
-                    <input type="hidden" name="cartItemId" value="<%= cartItem.getId() %>"/>
+                    <input type="hidden" name="orderId" value="<%= orderId %>"/>
+                    <input type="hidden" name="orderItemId" value="<%= orderItem.getId() %>"/>
                     <input type="hidden" name="quantity" value="<%= quantity %>"/>
                     <button type="submit">-</button>
                 </form>
@@ -58,20 +58,20 @@
                 <span><%= quantity %></span>
 
                 <!-- Increment button -->
-                <form method="POST" action="CartServlet" style="display:inline;">
+                <form method="POST" action="OrderServlet" style="display:inline;">
                     <input type="hidden" name="action" value="increment"/>
-                    <input type="hidden" name="cartId" value="<%= cartId %>"/>
-                    <input type="hidden" name="cartItemId" value="<%= cartItem.getId() %>"/>
+                    <input type="hidden" name="orderId" value="<%= orderId %>"/>
+                    <input type="hidden" name="orderItemId" value="<%= orderItem.getId() %>"/>
                     <input type="hidden" name="quantity" value="<%= quantity %>"/>
                     <button type="submit">+</button>
                 </form>
             </td>
-            <td><%= cartItem.getPrice() %></td>
-            <td><%= cartItem.getPrice() * quantity %></td>
+            <td><%= orderItem.getPrice() %></td>
+            <td><%= orderItem.getPrice() * quantity %></td>
             <td>
-            <form action="CartServlet" method="POST" style="display:inline;">
+            <form action="OrderServlet" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="remove">
-                <input type="hidden" name="productId" value="<%= cartItem.getId() %>">
+                <input type="hidden" name="productId" value="<%= orderItem.getId() %>">
                 <button type="submit">Remove</button>
             </form>
             </td>

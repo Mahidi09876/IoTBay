@@ -1,8 +1,6 @@
 package model.dao;
 import model.Device;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeviceDAO {
     private Connection connection;
