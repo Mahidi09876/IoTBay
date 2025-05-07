@@ -4,16 +4,16 @@ import java.sql.*;
 import java.util.Map;
 import java.util.HashMap;
 
-public class CartDAO {
+public class OrderDAO {
 
     private Connection conn;
 
-    public CartDAO(Connection conn) throws SQLException {
+    public OrderDAO(Connection conn) throws SQLException {
         this.conn = conn;
     }
 
-    public int createCart(int userId) throws SQLException {
-        String query = "INSERT INTO Cart (user_id) VALUES (?)";
+    public int createOrder(int userId) throws SQLException {
+        String query = "INSERT INTO order (user_id) VALUES (?)";
         try (PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, userId);
             stmt.executeUpdate();
@@ -21,39 +21,39 @@ public class CartDAO {
             if (keys.next()) {
                 return keys.getInt(1);
             }
-            throw new SQLException("Cart creation failed, no ID obtained.");
+            throw new SQLException("Order creation failed, no ID obtained.");
         }
     }
 
-    public Integer getCartIdByUserId(int userId) throws SQLException {
-        String query = "SELECT cart_id FROM cart WHERE user_id = ? AND status = 'ACTIVE'";
+    public Integer getOrderIdByUserId(int userId) throws SQLException {
+        String query = "SELECT Order_id FROM Order WHERE user_id = ? AND status = 'ACTIVE'";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("cart_id");
+                return rs.getInt("Order_id");
             }
             return -1; 
         }
     }
 
-    public Cart findCart(int cartId) throws SQLException {
-        String query = "SELECT * FROM CartItem WHERE cart_id = ?";
+    public Order findOrder(int orderId) throws SQLException {
+        String query = "SELECT * FROM OrderItem WHERE order_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, cartId);
+            stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Cart(rs.getInt("user_id"), rs.getInt("cart_id"), rs.getTimestamp("created_at"),
+                return new Order(rs.getInt("user_id"), rs.getInt("order_id"), rs.getTimestamp("created_at"),
                         rs.getString("status"));
             }
             return null;
         }
     }
 
-    public void addCartItem(int cartId, Device item, int quantity) throws SQLException {
-        String query = "INSERT INTO CartItem (cart_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+    public void addOrderItem(int orderId, Device item, int quantity) throws SQLException {
+        String query = "INSERT INTO OrderItem (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, cartId);
+            stmt.setInt(1, orderId);
             stmt.setInt(2, item.getId());
             stmt.setInt(3, quantity);
             stmt.setDouble(4, item.getPrice());
@@ -61,27 +61,27 @@ public class CartDAO {
         }
     }
 
-    public void removeCartItem(int cartId, String productId) throws SQLException {
-        String query = "DELETE FROM CartItem WHERE cart_id = ? AND product_id = ?";
+    public void removeOrderItem(int orderId, String productId) throws SQLException {
+        String query = "DELETE FROM OrderItem WHERE order_id = ? AND product_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, cartId);
+            stmt.setInt(1, orderId);
             stmt.setString(2, productId);
             stmt.executeUpdate();
         }
     }
 
-    public void updateCartItem(int cartId, int productId, int quantity) throws SQLException {
-        String query = "UPDATE cartitem SET quantity = ? WHERE cart_id = ? AND device_id = ?";
+    public void updateOrderItem(int orderId, int productId, int quantity) throws SQLException {
+        String query = "UPDATE orderitem SET quantity = ? WHERE order_id = ? AND device_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, quantity);
-            stmt.setInt(2, cartId);
+            stmt.setInt(2, orderId);
             stmt.setInt(3, productId);
             stmt.executeUpdate();
         }
     }
 
-    // Returns a list of items in the cart with their quantities added to cart
-    public Map<Integer, Integer> getCartItems(Integer cartId) throws SQLException {
+    // Returns a list of items in the order with their quantities added to order
+    public Map<Integer, Integer> getOrderItems(Integer orderId) throws SQLException {
         String sql = 
             "SELECT " +
             "    d.device_id, " +
@@ -90,13 +90,13 @@ public class CartDAO {
             "    d.unit_price, " +
             "    d.stock, " +
             "    ci.quantity " +
-            "FROM CartItem ci " +
+            "FROM OrderItem ci " +
             "JOIN Device d ON ci.device_id = d.device_id " +
-            "WHERE ci.cart_id = ?";
+            "WHERE ci.order_id = ?";
         
         Map<Integer, Integer> items = new HashMap<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartId);
+            ps.setInt(1, orderId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     items.put(
@@ -109,10 +109,10 @@ public class CartDAO {
         return items;
     }
 
-    public void submitCart(int cartId) throws SQLException {
-        String query = "UPDATE Cart SET status = 'submitted' WHERE cart_id = ?";
+    public void submitOrder(int orderId) throws SQLException {
+        String query = "UPDATE Order SET status = 'submitted' WHERE order_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, cartId);
+            stmt.setInt(1, orderId);
             stmt.executeUpdate();
         }
     }
