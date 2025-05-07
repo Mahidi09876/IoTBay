@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.dao.*;
 
-@WebServlet("/ConnServlet")
+// @WebServlet("/ConnServlet")
 public class ConnServlet extends HttpServlet {
 
     private DBConnector db;
     private DBManager manager;
+    private DeviceDAO deviceDAO;
+    private CartDAO cartDAO;
     private Connection conn;
 
     @Override // Create and instance of DBConnector for the deployment session
@@ -33,12 +35,17 @@ public class ConnServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        System.out.println("ConnServlet.init() called");
+
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         conn = db.openConnection();
 
         try {
             manager = new DBManager(conn);
+            cartDAO = new CartDAO(conn);
+            deviceDAO = new DeviceDAO(conn);
 
         } catch (SQLException ex) {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,6 +53,8 @@ public class ConnServlet extends HttpServlet {
 
         // export the DB manager to the view-session (JSPs)
         session.setAttribute("manager", manager);
+        session.setAttribute("cartDAO", cartDAO);
+        session.setAttribute("deviceDAO", deviceDAO);
 
     }
 

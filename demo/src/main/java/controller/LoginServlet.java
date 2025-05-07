@@ -13,12 +13,13 @@ import jakarta.servlet.http.HttpSession;
 import model.User;
 import model.dao.DBManager;
 
-@WebServlet("/LoginServlet")
+// @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
 
         // 1- retrieve the current session
         HttpSession session = request.getSession();
@@ -30,6 +31,9 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         // 5- retrieve the manager instance from session
         DBManager manager = (DBManager) session.getAttribute("manager");
+
+        System.out.println("LoginServlet.doPost() called");
+
         if (manager == null) {
             throw new ServletException("DBManager not found in session");
         }
@@ -42,10 +46,12 @@ public class LoginServlet extends HttpServlet {
         }
 
         if (!validator.validateEmail(email)) {
+            System.out.println("Invalid email format");
             // 8-set incorrect email error to the session
             session.setAttribute("errorMsg", "Invalid email format.");
             // 9- redirect user back to the login.jsp
-            request.getRequestDispatcher("login.jsp").include(request, response);
+            // request.getRequestDispatcher("login.jsp").include(request, response);
+            response.sendRedirect("login.jsp");
         } else if (!validator.validatePassword(password)) {
             // 11-set incorrect password error to the session
             session.setAttribute("errorMsg", "Invalid password format.");
@@ -55,7 +61,7 @@ public class LoginServlet extends HttpServlet {
             // 13-save the logged in user object to the session
             session.setAttribute("user", user);
             // 14- redirect user to the main.jsp
-            request.getRequestDispatcher("landing_page.jsp").include(request, response);
+            request.getRequestDispatcher("welcome_page.jsp").include(request, response);
         } else {
             // 15-set user does not exist error to the session
             session.setAttribute("errorMsg", "User does not exist.");

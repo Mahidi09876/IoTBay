@@ -12,7 +12,6 @@ public class TestDB {
     public static void main(String[] args) {
 
         try {
-            System.out.println("Hi");
 
             DBConnector connector = new DBConnector();
 
