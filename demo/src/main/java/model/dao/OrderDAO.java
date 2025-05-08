@@ -60,11 +60,11 @@ public class OrderDAO {
         }
     }
 
-    public void removeOrderItem(int orderId, String productId) throws SQLException {
-        String query = "DELETE FROM OrderItem WHERE order_id = ? AND product_id = ?";
+    public void removeOrderItem(int orderId, int productId) throws SQLException {
+        String query = "DELETE FROM OrderItem WHERE order_id = ? AND device_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, orderId);
-            stmt.setString(2, productId);
+            stmt.setInt(2, productId);
             stmt.executeUpdate();
         }
     }
@@ -79,27 +79,33 @@ public class OrderDAO {
         }
     }
 
-    public List<Integer> getOrderIdsByStatusAndSearchQuery(int userId, String status, String searchQuery) throws SQLException {
-        // Base SQL query
-        String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = ?";
+    public List<Integer> getOrderIdsByStatusAndSearchQuery(int userId, String status, String searchQueryId, String searchQueryDate) throws SQLException {
         
-        // Add search conditions if searchQuery is not empty
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            sql += " AND (CAST(order_id AS CHAR) LIKE ? OR created_at LIKE ?)";
-        }
+        String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = ?";
     
+        boolean hasIdFilter   = searchQueryId   != null && !searchQueryId.trim().isEmpty();
+        boolean hasDateFilter = searchQueryDate != null && !searchQueryDate.trim().isEmpty();
+        
+        if (hasIdFilter) {
+            sql += " AND CAST(order_id AS CHAR) LIKE ?";
+        }
+        if (hasDateFilter) {
+            sql += " AND created_at LIKE ?";
+        }
+        
         List<Integer> orderIds = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setString(2, status);
-    
-            // Set search query parameters if applicable
-            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-                String searchPattern = "%" + searchQuery + "%";
-                ps.setString(3, searchPattern); // For order_id
-                ps.setString(4, searchPattern); // For created_at
+            int idx = 1;
+            ps.setInt(idx++, userId);
+            ps.setString(idx++, status);
+            
+            if (hasIdFilter) {
+                ps.setString(idx++, "%" + searchQueryId.trim() + "%");
             }
-    
+            if (hasDateFilter) {
+                ps.setString(idx++, "%" + searchQueryDate.trim() + "%");
+            }
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     orderIds.add(rs.getInt("order_id"));
@@ -138,10 +144,11 @@ public class OrderDAO {
         return items;
     }
 
-    public void submitOrder(int orderId) throws SQLException {
-        String query = "UPDATE Order SET status = 'submitted' WHERE order_id = ?";
+    public void updateOrderStatus(int orderId, String status) throws SQLException {
+        String query = "UPDATE `order` SET status = ? WHERE order_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, orderId);
+            stmt.setString(1, status);
+            stmt.setInt(2, orderId);
             stmt.executeUpdate();
         }
     }

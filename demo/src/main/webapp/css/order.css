@@ -78,7 +78,7 @@
 }
 
 .submit-btn {
-  background: #007bff; /* Green background */
+  background: #007bff; 
   color: white; /* White text */
   border: none;
   border-radius: 3px;
@@ -87,7 +87,7 @@
 }
 
 .submit-btn:hover {
-  background: #218838; /* Darker green on hover */
+  background: #0056b3; 
 }
 
 .order-status-title {

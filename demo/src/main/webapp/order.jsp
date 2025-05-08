@@ -21,20 +21,21 @@
   <div class="orders-page">
     <h1>Your Orders</h1>
 
-        <!-- Search Bar -->
     <form class="search-form">
-        <input type="text" name="searchQuery" placeholder="Search orders by id or created date" class="search-input" />
+        <h3>ID:</h3>
+        <input type="text" name="orderId" placeholder="Search orders by ID" class="search-input" />
+        <h3>Created Date:</h3>
+        <input type="text" name="createdDate" placeholder="Search orders by created date (YYYY-MM-DD)" class="search-input" />
         <button type="submit" class="search-btn">Search</button>
     </form>
 
     <% 
     List<String> statuses = Arrays.asList("draft", "submitted", "cancelled");
-        String searchQuery = request.getParameter("searchQuery");
-    if (searchQuery == null) {
-        searchQuery = ""; // Default to an empty string if no search query is provided
-    }
+    String searchQueryId = request.getParameter("orderId") != null ? request.getParameter("orderId") : "";
+    String searchQueryDate = request.getParameter("createdDate") != null ? request.getParameter("createdDate") : "";
+
     for (String status : statuses) {
-        List<Integer> orderIds = orderDAO.getOrderIdsByStatusAndSearchQuery(userId, status, searchQuery);
+        List<Integer> orderIds = orderDAO.getOrderIdsByStatusAndSearchQuery(userId, status, searchQueryId, searchQueryDate);
         Map<Integer, Integer> items = new HashMap<>();
     %>
     <hr>
@@ -66,7 +67,7 @@
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Total</th>
-                <th>Actions</th>
+                <%-- <th>Actions</th> --%>
             </tr>
 
             <% for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
@@ -99,7 +100,7 @@
                 </td>
                 <td>$<%= orderItem.getPrice() %></td>
                 <td>$<%= String.format("%.2f", orderItem.getPrice() * quantity) %></td>
-                <td>
+                <%-- <td>
                 <div class="action-controls">
                     <form action="OrderServlet" method="POST" class="remove-form">
                         <input type="hidden" name="action" value="remove"/>
@@ -108,7 +109,7 @@
                         <button type="submit" class="remove-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Remove</button>                    
                     </form>
                 </div>
-                </td>
+                </td> --%>
             </tr>
             <% } %>
             </table>
