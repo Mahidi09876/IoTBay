@@ -79,11 +79,12 @@ public class OrderDAO {
         }
     }
 
-    public List<Integer> getAllDraftOrderIds(int userId) throws SQLException {
-        String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = 'draft'";
+    public List<Integer> getOrderIdsByStatus(int userId, String status) throws SQLException {
+        String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = ?";
         List<Integer> orderIds = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
+            ps.setString(2, status);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     orderIds.add(rs.getInt("order_id"));

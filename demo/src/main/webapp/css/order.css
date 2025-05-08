@@ -1,0 +1,109 @@
+.order-block {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-id {
+  font-size: 1.2em;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.order-table th,
+.order-table td {
+  padding: 8px 12px;
+  /* border-bottom: 1px solid #eee; */
+  text-align: center;
+}
+
+.qty-cell {
+  /* display: inline-flex; */
+  align-items: center;
+  /* justify-content: center; */
+}
+
+
+.qty-form {
+  margin: 0 5px;
+}
+
+.qty-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.qty-btn:hover {
+  background: #0056b3;
+}
+
+.qty-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;  
+}
+
+.qty-value {
+  min-width: 20px;
+  display: inline-block;
+  text-align: center;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #a71d2a;
+}
+
+.submit-btn {
+  background: #28a745; /* Green background */
+  color: white; /* White text */
+  border: none;
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #218838; /* Darker green on hover */
+}
+
+.order-status-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+  border-bottom: 2px solid #007BFF;
+  padding-bottom: 5px;
+}
+
+.disabled {
+  color: #959595; /* Grey out the text */
+  pointer-events: none; /* Disable interactions like clicks */
+  opacity: 0.6; /* Make it slightly transparent */
+  background: #ccc; /* Grey out the button */
+}
