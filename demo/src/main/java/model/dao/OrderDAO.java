@@ -79,12 +79,27 @@ public class OrderDAO {
         }
     }
 
-    public List<Integer> getOrderIdsByStatus(int userId, String status) throws SQLException {
+    public List<Integer> getOrderIdsByStatusAndSearchQuery(int userId, String status, String searchQuery) throws SQLException {
+        // Base SQL query
         String sql = "SELECT order_id FROM `order` WHERE user_id = ? AND status = ?";
+        
+        // Add search conditions if searchQuery is not empty
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            sql += " AND (CAST(order_id AS CHAR) LIKE ? OR created_at LIKE ?)";
+        }
+    
         List<Integer> orderIds = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, status);
+    
+            // Set search query parameters if applicable
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                String searchPattern = "%" + searchQuery + "%";
+                ps.setString(3, searchPattern); // For order_id
+                ps.setString(4, searchPattern); // For created_at
+            }
+    
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     orderIds.add(rs.getInt("order_id"));

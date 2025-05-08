@@ -21,10 +21,20 @@
   <div class="orders-page">
     <h1>Your Orders</h1>
 
+        <!-- Search Bar -->
+    <form class="search-form">
+        <input type="text" name="searchQuery" placeholder="Search orders by id or created date" class="search-input" />
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+
     <% 
     List<String> statuses = Arrays.asList("draft", "submitted", "cancelled");
+        String searchQuery = request.getParameter("searchQuery");
+    if (searchQuery == null) {
+        searchQuery = ""; // Default to an empty string if no search query is provided
+    }
     for (String status : statuses) {
-        List<Integer> orderIds = orderDAO.getOrderIdsByStatus(userId, status);
+        List<Integer> orderIds = orderDAO.getOrderIdsByStatusAndSearchQuery(userId, status, searchQuery);
         Map<Integer, Integer> items = new HashMap<>();
     %>
     <hr>
@@ -33,7 +43,22 @@
             items = orderDAO.getOrderItems(orderId);
         %>
         <div class="order-block">
-            <h3 class="order-id">Order #<%= orderId %> </h3>
+            <div class="order-header">
+                <h3 class="order-id">Order #<%= orderId %> </h3>
+                <div class="order-actions">
+                    <form method="POST" action="OrderServlet" class="submit-form">
+                        <input type="hidden" name="action" value="submit"/>
+                        <input type="hidden" name="orderId" value="<%= orderId %>"/>
+                        <button type="submit" class="submit-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Submit</button>
+                    </form>
+                    
+                    <form method="POST" action="OrderServlet" class="cancel-form">
+                        <input type="hidden" name="action" value="cancel"/>
+                        <input type="hidden" name="orderId" value="<%= orderId %>"/>
+                        <button type="submit" class="cancel-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Cancel</button>
+                    </form>
+                </div>
+            </div>
             <table class="order-table" border="1">
             <tr>
                 <th>Product</th>
@@ -77,11 +102,11 @@
                 <td>
                 <div class="action-controls">
                     <form action="OrderServlet" method="POST" class="remove-form">
-                    <input type="hidden" name="action" value="remove"/>
-                    <input type="hidden" name="orderId" value="<%= orderId %>"/>
-                    <input type="hidden" name="orderItemId" value="<%= orderItem.getId() %>"/>
-                    <button type="submit" class="submit-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Submit</button>
-                    <button type="submit" class="remove-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Remove</button>                    </form>
+                        <input type="hidden" name="action" value="remove"/>
+                        <input type="hidden" name="orderId" value="<%= orderId %>"/>
+                        <input type="hidden" name="orderItemId" value="<%= orderItem.getId() %>"/>
+                        <button type="submit" class="remove-btn <%= (status.equals("submitted") || status.equals("cancelled")) ? "disabled" : "" %>">Remove</button>                    
+                    </form>
                 </div>
                 </td>
             </tr>
