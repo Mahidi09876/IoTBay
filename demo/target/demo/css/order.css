@@ -125,6 +125,7 @@
   justify-content: center; /* Center the search bar on the page */
   align-items: center; /* Vertically align the input and button */
   margin-bottom: 20px; /* Add spacing below the search bar */
+  gap: 0.5rem;
 }
 
 .search-input {

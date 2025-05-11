@@ -19,6 +19,7 @@ public class OrderServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
+        System.out.println("OrderServlet.doPost() called with action: " + action);
         int orderId = Integer.parseInt(request.getParameter("orderId"));
         int orderItemId;
         int quantity;
@@ -45,6 +46,10 @@ public class OrderServlet extends HttpServlet {
                 case "cancel":
                     orderDAO.updateOrderStatus(orderId, "cancelled");
                     response.sendRedirect("order.jsp");
+                    break;
+                case "submit":
+                    orderDAO.updateOrderStatus(orderId, "submitted");
+                    response.sendRedirect("payment.jsp");
                     break;
                 default:
                     throw new ServletException("Invalid action: " + action);

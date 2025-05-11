@@ -23,9 +23,10 @@
 
     <form class="search-form">
         <h3>ID:</h3>
-        <input type="text" name="orderId" placeholder="Search orders by ID" class="search-input" />
+        <input type="text" name="orderId" placeholder="Search by ID" class="search-input" />
+        <h3>&nbsp;</h3>
         <h3>Created Date:</h3>
-        <input type="text" name="createdDate" placeholder="Search orders by created date (YYYY-MM-DD)" class="search-input" />
+        <input type="text" name="createdDate" placeholder="YYYY-MM-DD HH:MM:SS" class="search-input" />
         <button type="submit" class="search-btn">Search</button>
     </form>
 

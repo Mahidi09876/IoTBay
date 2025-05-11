@@ -29,4 +29,13 @@ public class DeviceDAO {
         return null;
     }
 
+    public void updateDeviceStock(int deviceId, int newStock) throws SQLException {
+        String query = "UPDATE device SET stock = ? WHERE device_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, newStock);
+            statement.setInt(2, deviceId);
+            statement.executeUpdate();
+        }
+    }
+
 }
