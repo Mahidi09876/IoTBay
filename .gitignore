@@ -20,3 +20,6 @@ demo/target/classes/model/dao/DBConnector.class
 demo/target/classes/model/dao/DBManager.class
 demo/target/classes/model/dao/DeviceDAO.class
 demo/target/classes/model/dao/OrderDAO.class
+demo/target/classes/model/Payment.class
+demo/target/classes/model/dao/DeviceDAO.class
+demo/target/classes/model/dao/OrderDAO.class
