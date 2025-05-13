@@ -18,6 +18,7 @@ public class ConnServlet extends HttpServlet {
     private DBManager manager;
     private DeviceDAO deviceDAO;
     private OrderDAO orderDAO;
+    private PaymentDAO paymentDAO;
     private Connection conn;
 
     @Override // Create and instance of DBConnector for the deployment session
@@ -36,15 +37,16 @@ public class ConnServlet extends HttpServlet {
             throws ServletException, IOException {
 
         System.out.println("ConnServlet.init() called");
-
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
+
         conn = db.openConnection();
 
         try {
             manager = new DBManager(conn);
             orderDAO = new OrderDAO(conn);
             deviceDAO = new DeviceDAO(conn);
+            paymentDAO = new PaymentDAO(conn);
 
         } catch (SQLException ex) {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -54,6 +56,7 @@ public class ConnServlet extends HttpServlet {
         session.setAttribute("manager", manager);
         session.setAttribute("orderDAO", orderDAO);
         session.setAttribute("deviceDAO", deviceDAO);
+        session.setAttribute("paymentDAO", paymentDAO);
 
     }
 

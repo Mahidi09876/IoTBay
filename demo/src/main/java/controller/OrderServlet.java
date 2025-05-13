@@ -1,6 +1,8 @@
 package controller;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.servlet.ServletException;
@@ -15,22 +17,54 @@ import model.dao.*;
 public class OrderServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        int cartId = Integer.parseInt(request.getParameter("cartId"));
-        int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        System.out.println("OrderServlet.doPost() called with action: " + action);
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int orderItemId;
+        int quantity;
         OrderDAO orderDAO = (OrderDAO) session.getAttribute("orderDAO");
+        DeviceDAO deviceDAO = (DeviceDAO) session.getAttribute("deviceDAO");
 
         try {
-            if ("increment".equals(action)) {
-                orderDAO.updateOrderItem(cartId, cartItemId, quantity + 1);
-                response.sendRedirect("cart.jsp");
-            } else if ("decrement".equals(action)) {
-                orderDAO.updateOrderItem(cartId, cartItemId, quantity - 1);
-                response.sendRedirect("cart.jsp");
+            switch (action) {
+                case "increment":
+                    orderItemId = Integer.parseInt(request.getParameter("orderItemId"));
+                    quantity = Integer.parseInt(request.getParameter("quantity"));
+                    orderDAO.updateOrderItem(orderId, orderItemId, quantity + 1);
+                    response.sendRedirect("order.jsp");
+                    break;
+                case "decrement":
+                    orderItemId = Integer.parseInt(request.getParameter("orderItemId"));
+                    quantity = Integer.parseInt(request.getParameter("quantity"));
+                    if (quantity == 1) {
+                        orderDAO.removeOrderItem(orderId, orderItemId);
+                    } else {
+                        orderDAO.updateOrderItem(orderId, orderItemId, quantity - 1);
+                    }
+                    response.sendRedirect("order.jsp");
+                    break;
+                case "cancel":
+                    Map<Integer, Integer> items = orderDAO.getOrderItems(orderId);
+                    for (Map.Entry<Integer, Integer> e : items.entrySet()) {
+                        int deviceId = e.getKey();
+                        int qty = e.getValue();
+
+                        int currentStock = deviceDAO.getStock(deviceId);
+                        deviceDAO.updateStock(deviceId, currentStock + qty);
+                    }
+                    orderDAO.updateOrderStatus(orderId, "cancelled");
+                    response.sendRedirect("order.jsp");
+                    break;
+                case "submit":
+                    orderDAO.updateOrderStatus(orderId, "submitted");
+                    response.sendRedirect("payment.jsp");
+                    break;
+                default:
+                    throw new ServletException("Invalid action: " + action);
             }
         } catch (SQLException ex) {
             Logger.getLogger(OrderServlet.class.getName()).log(Level.SEVERE, null, ex);
