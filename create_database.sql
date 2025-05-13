@@ -65,7 +65,7 @@ CREATE TABLE Payment (
     card_number   VARCHAR(20)     NOT NULL,           -- tokenized or masked
     amount        DECIMAL(10,2)   NOT NULL CHECK(amount >= 0),
     paid_at       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status        ENUM('draft','completed','failed') NOT NULL DEFAULT 'draft',
+    status        ENUM('pending','completed','cancelled') NOT NULL DEFAULT 'draft',
     FOREIGN KEY (order_id) REFERENCES `Order`(order_id) ON DELETE CASCADE
 );
 
