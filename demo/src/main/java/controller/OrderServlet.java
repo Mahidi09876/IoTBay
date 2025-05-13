@@ -1,6 +1,8 @@
 package controller;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.servlet.ServletException;
@@ -15,7 +17,8 @@ import model.dao.*;
 public class OrderServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
@@ -24,6 +27,7 @@ public class OrderServlet extends HttpServlet {
         int orderItemId;
         int quantity;
         OrderDAO orderDAO = (OrderDAO) session.getAttribute("orderDAO");
+        DeviceDAO deviceDAO = (DeviceDAO) session.getAttribute("deviceDAO");
 
         try {
             switch (action) {
@@ -44,6 +48,14 @@ public class OrderServlet extends HttpServlet {
                     response.sendRedirect("order.jsp");
                     break;
                 case "cancel":
+                    Map<Integer, Integer> items = orderDAO.getOrderItems(orderId);
+                    for (Map.Entry<Integer, Integer> e : items.entrySet()) {
+                        int deviceId = e.getKey();
+                        int qty = e.getValue();
+
+                        int currentStock = deviceDAO.getStock(deviceId);
+                        deviceDAO.updateStock(deviceId, currentStock + qty);
+                    }
                     orderDAO.updateOrderStatus(orderId, "cancelled");
                     response.sendRedirect("order.jsp");
                     break;
