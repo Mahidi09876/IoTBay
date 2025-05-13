@@ -12,45 +12,42 @@ public class PaymentDAO {
         this.conn = conn;
     }
 
-    // Get payments by search query
-    public List<Payment> getPaymentsBySearchQuery(int userId, String paymentId, String paymentDate) throws SQLException {
-        String sql = "SELECT * FROM Payment WHERE order_id IN (SELECT order_id FROM `Order` WHERE user_id = ?)";
-        boolean hasIdFilter = paymentId != null && !paymentId.trim().isEmpty();
-        boolean hasDateFilter = paymentDate != null && !paymentDate.trim().isEmpty();
+    // Get payment IDs by status and search query
+    public List<Integer> getPaymentIdsByStatusAndSearchQuery(int userId, String status, String searchQueryId,
+            String searchQueryDate) throws SQLException {
+
+        String sql = "SELECT payment_id FROM Payment WHERE order_id IN (SELECT order_id FROM `Order` WHERE user_id = ?) AND status = ?";
+
+        boolean hasIdFilter = searchQueryId != null && !searchQueryId.trim().isEmpty();
+        boolean hasDateFilter = searchQueryDate != null && !searchQueryDate.trim().isEmpty();
 
         if (hasIdFilter) {
             sql += " AND CAST(payment_id AS CHAR) LIKE ?";
         }
         if (hasDateFilter) {
-            sql += " AND DATE(paid_at) = ?";
+            sql += " AND paid_at LIKE ?";
         }
 
-        List<Payment> payments = new ArrayList<>();
+        List<Integer> paymentIds = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             int idx = 1;
             ps.setInt(idx++, userId);
+            ps.setString(idx++, status);
+
             if (hasIdFilter) {
-                ps.setString(idx++, "%" + paymentId.trim() + "%");
+                ps.setString(idx++, "%" + searchQueryId.trim() + "%");
             }
             if (hasDateFilter) {
-                ps.setString(idx++, paymentDate);
+                ps.setString(idx++, "%" + searchQueryDate.trim() + "%");
             }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    payments.add(new Payment(
-                        rs.getInt("payment_id"),
-                        rs.getInt("order_id"),
-                        rs.getString("method"),
-                        rs.getString("card_number"),
-                        rs.getDouble("amount"),
-                        rs.getTimestamp("paid_at"),
-                        rs.getString("status")
-                    ));
+                    paymentIds.add(rs.getInt("payment_id"));
                 }
             }
         }
-        return payments;
+        return paymentIds;
     }
 
     // Create a new payment
