@@ -1,41 +1,47 @@
 package model;
 
+import java.util.Random;
+
 public class User {
-    private String userId;
-    private String fullName;
+    private int userID;
+    private String name;
     private String email;
+    private String password;
     private String phoneNumber;
     private String address;
-    private String password;
-    private String role;
 
+    // Constructors
     public User() {}
 
-    public User(String userId, String fullName, String email, String phoneNumber, String address, String password, String role) {
-        this.userId = userId;
-        this.fullName = fullName;
+    public User(String name, String email, String password, String phoneNumber, String address) {
+        this.userID = generateRandomUserID();
+        this.name = name;
         this.email = email;
+        this.password = password;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.password = password;
-        this.role = role;
     }
 
-    // Getters and Setters
-    public String getUserId() {
-        return userId;
+    private int generateRandomUserID() {
+        Random rand = new Random();
+        return 10000 + rand.nextInt(90000);
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    // Getters and setters
+    public int getUserID() {
+        return userID;
     }
 
-    public String getFullName() {
-        return fullName;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -44,6 +50,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhoneNumber() {
@@ -60,21 +74,5 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }
