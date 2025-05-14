@@ -13,7 +13,7 @@ public class PaymentDAO {
     }
 
     // Get payment IDs by status and search query
-    public List<Integer> getPaymentIdsByStatusAndSearchQuery(int userId, String status, String searchQueryId,
+    public List<Integer> getPaymentIdsByStatusAndSearchQuery(Integer userId, String status, String searchQueryId,
             String searchQueryDate) throws SQLException {
 
         String sql = "SELECT payment_id FROM Payment WHERE order_id IN (SELECT order_id FROM `Order` WHERE user_id = ?) AND status = ?";

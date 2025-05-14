@@ -1,3 +1,4 @@
+<jsp:include page="/ConnServlet"/>
 <%@ page import="java.util.*" %>
 <%@ page import="model.*" %>
 <%@ page import="model.dao.*" %>
@@ -5,88 +6,152 @@
 <%
     PaymentDAO paymentDAO = (PaymentDAO) session.getAttribute("paymentDAO");
     Integer userId = 1; // TODO: Retrieve from session
-    String searchPaymentId = request.getParameter("paymentId") != null ? request.getParameter("paymentId") : "";
-    String searchPaymentDate = request.getParameter("paymentDate") != null ? request.getParameter("paymentDate") : "";
-    List<Payment> payments = paymentDAO.getPaymentsBySearchQuery(userId, searchPaymentId, searchPaymentDate);
+
+    // Read search parameters
+    String searchPaymentId   = request.getParameter("paymentId")   != null 
+                              ? request.getParameter("paymentId").trim()   : "";
+    String searchPaymentDate = request.getParameter("paymentDate") != null 
+                              ? request.getParameter("paymentDate").trim() : "";
+
+    // Define statuses in the order to display
+    List<String> statuses = Arrays.asList("pending", "completed", "cancelled");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Payment Management</title>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/payment.css">
-    <title>Payment Management</title>
 </head>
 <body>
-    <div class="payment-page">
-        <h1>Payment Management</h1>
+  <div class="payment-page">
+    <h1>Payment Management</h1>
 
-        <!-- Search Form -->
-        <form class="search-form" method="GET" action="payment.jsp">
-            <input type="text" name="paymentId" placeholder="Search by Payment ID" class="search-input" />
-            <input type="date" name="paymentDate" placeholder="Search by Date" class="search-input" />
-            <button type="submit" class="search-btn">Search</button>
-        </form>
+    <!-- Combined Search Form -->
+    <form class="search-form" method="GET" action="payment.jsp">
+        <h3>ID:</h3>
+        <input 
+          type="text" 
+          name="paymentId" 
+          placeholder="Search by Payment ID" 
+          class="search-input"
+          value="<%= searchPaymentId %>"/>
+        <h3>&nbsp;</h3>
+        <h3>Created Date:</h3>
+        <input 
+          type="text" 
+          name="paymentDate" 
+          placeholder="YYYY-MM-DD" 
+          class="search-input"
+          value="<%= searchPaymentDate %>"/>
+        <button type="submit" class="search-btn">Search</button>
+    </form>
 
-        <!-- Create Payment Form -->
-        <h2>Create Payment</h2>
-        <form method="POST" action="PaymentServlet" class="create-payment-form">
-            <input type="hidden" name="action" value="create" />
-            <label for="orderId">Order ID:</label>
-            <input type="text" name="orderId" required />
-            <label for="method">Payment Method:</label>
-            <select name="method" required>
-                <option value="Credit Card">Credit Card</option>
-                <option value="Debit Card">Debit Card</option>
-                <option value="PayPal">PayPal</option>
-            </select>
-            <label for="cardNumber">Card Number:</label>
-            <input type="text" name="cardNumber" required />
-            <label for="amount">Amount:</label>
-            <input type="number" step="0.01" name="amount" required />
-            <button type="submit" class="create-btn">Create Payment</button>
-        </form>
+    <% for (String status : statuses) {
+         // fetch filtered IDs
+         List<Integer> paymentIds = paymentDAO
+           .getPaymentIdsByStatusAndSearchQuery(
+               userId, status, 
+               searchPaymentId, searchPaymentDate
+           );
+    %>
+      <hr>
+      <h2 class="payment-status-title">
+        <%= status.toUpperCase() %> PAYMENTS
+      </h2>
 
-        <!-- Payment History -->
-        <h2>Payment History</h2>
+      <%
+        if (paymentIds.isEmpty()) {
+      %>
+        <p>No <%= status %> payments.</p>
+      <%
+        } else {
+          for (Integer paymentId : paymentIds) {
+            Map<Integer,Integer> items = paymentDAO.getPaymentItems(paymentId);
+      %>
+      <div class="payment-block">
+        <div class="payment-header">
+          <h3 class="payment-id">Payment #<%= paymentId %></h3>
+          <div class="payment-actions">
+            <form method="POST" action="PaymentServlet" class="submit-form">
+              <input type="hidden" name="action"     value="submit"/>
+              <input type="hidden" name="paymentId"  value="<%= paymentId %>"/>
+              <button 
+                type="submit" 
+                class="submit-btn <%= (status.equals("completed")||status.equals("cancelled")) ? "disabled" : "" %>">
+                Submit
+              </button>
+            </form>
+            <form method="POST" action="PaymentServlet" class="cancel-form">
+              <input type="hidden" name="action"     value="cancel"/>
+              <input type="hidden" name="paymentId"  value="<%= paymentId %>"/>
+              <button 
+                type="submit" 
+                class="cancel-btn <%= (status.equals("completed")||status.equals("cancelled")) ? "disabled" : "" %>">
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+
         <table class="payment-table" border="1">
-            <tr>
-                <th>Payment ID</th>
-                <th>Order ID</th>
-                <th>Method</th>
-                <th>Card Number</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            <% for (Payment payment : payments) { %>
-            <tr>
-                <td><%= payment.getPaymentId() %></td>
-                <td><%= payment.getOrderId() %></td>
-                <td><%= payment.getMethod() %></td>
-                <td><%= payment.getCardNumber() %></td>
-                <td>$<%= String.format("%.2f", payment.getAmount()) %></td>
-                <td><%= payment.getPaidAt() %></td>
-                <td><%= payment.getStatus() %></td>
-                <td>
-                    <!-- Update Payment -->
-                    <form method="POST" action="PaymentServlet" class="update-form">
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="paymentId" value="<%= payment.getPaymentId() %>" />
-                        <button type="submit" class="update-btn <%= payment.getStatus().equals("completed") ? "disabled" : "" %>">Update</button>
-                    </form>
-
-                    <!-- Delete Payment -->
-                    <form method="POST" action="PaymentServlet" class="delete-form">
-                        <input type="hidden" name="action" value="delete" />
-                        <input type="hidden" name="paymentId" value="<%= payment.getPaymentId() %>" />
-                        <button type="submit" class="delete-btn <%= payment.getStatus().equals("completed") ? "disabled" : "" %>">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            <% } %>
+          <tr>
+            <th>Item</th><th>Description</th>
+            <th>Quantity</th><th>Price</th><th>Total</th>
+          </tr>
+        <%
+          for (Map.Entry<Integer,Integer> entry : items.entrySet()) {
+            PaymentItem pi = paymentDAO.getPaymentItemById(entry.getKey());
+            int qty = entry.getValue();
+        %>
+          <tr>
+            <td><%= pi.getId() %></td>
+            <td><%= pi.getDescription() %></td>
+            <td class="qty-cell">
+              <div class="qty-controls">
+                <form method="POST" action="PaymentServlet" class="qty-form">
+                  <input type="hidden" name="action"         value="decrement"/>
+                  <input type="hidden" name="paymentId"      value="<%= paymentId %>"/>
+                  <input type="hidden" name="paymentItemId"  value="<%= pi.getId() %>"/>
+                  <input type="hidden" name="quantity"       value="<%= qty %>"/>
+                  <button 
+                    type="submit" 
+                    class="qty-btn <%= (status.equals("completed")||status.equals("cancelled")) ? "disabled" : "" %>">
+                    –
+                  </button>
+                </form>
+                <span class="qty-value"><%= qty %></span>
+                <form method="POST" action="PaymentServlet" class="qty-form">
+                  <input type="hidden" name="action"         value="increment"/>
+                  <input type="hidden" name="paymentId"      value="<%= paymentId %>"/>
+                  <input type="hidden" name="paymentItemId"  value="<%= pi.getId() %>"/>
+                  <input type="hidden" name="quantity"       value="<%= qty %>"/>
+                  <button 
+                    type="submit" 
+                    class="qty-btn <%= (status.equals("completed")||status.equals("cancelled")) ? "disabled" : "" %>">
+                    +
+                  </button>
+                </form>
+              </div>
+            </td>
+            <td>$<%= String.format("%.2f", pi.getPrice()) %></td>
+            <td>
+              $<%= String.format("%.2f", pi.getPrice() * qty) %>
+            </td>
+          </tr>
+        <%
+          } // end items loop
+        %>
         </table>
-    </div>
+      </div>
+      <%
+          } // end paymentIds loop
+        } // end empty check
+      %>
+    <% } // end statuses loop %>
+
+  </div>
 </body>
 </html>
