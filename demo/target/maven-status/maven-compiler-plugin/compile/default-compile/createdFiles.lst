@@ -8,6 +8,7 @@ model\Payment.class
 model\Order.class
 controller\CartDisplayTest.class
 model\dao\DeviceDAO.class
+model\dao\PaymentDAO.class
 controller\TestDB.class
 model\dao\DBManager.class
 model\dao\OrderDAO.class
