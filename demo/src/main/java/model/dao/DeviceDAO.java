@@ -29,6 +29,7 @@ public class DeviceDAO {
         return null; // Return null if no device is found
     }
 
+>>>>>>> c3032db78588374215c223cdbae9178d899da24f
     public int getStock(int deviceId) throws SQLException {
         String query = "SELECT stock FROM Device WHERE device_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -50,5 +51,8 @@ public class DeviceDAO {
             statement.executeUpdate();
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> c3032db78588374215c223cdbae9178d899da24f
 }
