@@ -11,7 +11,6 @@ public class DeviceDAO {
         this.connection = connection;
     }
 
-<<<<<<< HEAD
     // Create a new device (Staff only)
     public void addDevice(Device device) throws SQLException {
         String query = "INSERT INTO device (device_name, type, unit_price, stock) VALUES (?, ?, ?, ?)";
@@ -21,26 +20,9 @@ public class DeviceDAO {
             statement.setDouble(3, device.getPrice());
             statement.setInt(4, device.getStock());
             statement.executeUpdate();
-=======
-    public Device getDeviceById(int id) throws SQLException {
-        String query = "SELECT * FROM device WHERE device_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return new Device(
-                            resultSet.getInt("device_id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("type"),
-                            resultSet.getDouble("unit_price"),
-                            resultSet.getInt("stock"));
-                }
-            }
->>>>>>> main
         }
     }
 
-<<<<<<< HEAD
     // Read all devices (Accessible to both staff and customers)
     public List<Device> getAllDevices() throws SQLException {
         List<Device> devices = new ArrayList<>();
@@ -88,7 +70,37 @@ public class DeviceDAO {
             statement.setDouble(3, device.getPrice());
             statement.setInt(4, device.getStock());
             statement.setInt(5, device.getId());
-=======
+            statement.executeUpdate();
+        }
+    }
+
+    // Delete a device (Staff only)
+    public void deleteDevice(int id) throws SQLException {
+        String query = "DELETE FROM device WHERE device_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        }
+    }
+
+    public Device getDeviceById(int id) throws SQLException {
+        String query = "SELECT * FROM device WHERE device_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new Device(
+                            resultSet.getInt("device_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("type"),
+                            resultSet.getDouble("unit_price"),
+                            resultSet.getInt("stock"));
+                }
+            }
+        }
+        return null; // Return null if no device is found
+    }
+
     public int getStock(int deviceId) throws SQLException {
         String query = "SELECT stock FROM Device WHERE device_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -107,20 +119,7 @@ public class DeviceDAO {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, newStock);
             statement.setInt(2, deviceId);
->>>>>>> main
             statement.executeUpdate();
         }
     }
-
-<<<<<<< HEAD
-    // Delete a device (Staff only)
-    public void deleteDevice(int id) throws SQLException {
-        String query = "DELETE FROM device WHERE device_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
-        }
-    }
-=======
->>>>>>> main
 }
