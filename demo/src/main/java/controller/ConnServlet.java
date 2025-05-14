@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +18,7 @@ public class ConnServlet extends HttpServlet {
     private DBManager manager;
     private DeviceDAO deviceDAO;
     private OrderDAO orderDAO;
+    private PaymentDAO paymentDAO;
     private Connection conn;
 
     @Override // Create and instance of DBConnector for the deployment session
@@ -46,6 +46,7 @@ public class ConnServlet extends HttpServlet {
             manager = new DBManager(conn);
             orderDAO = new OrderDAO(conn);
             deviceDAO = new DeviceDAO(conn);
+            paymentDAO = new PaymentDAO(conn);
 
         } catch (SQLException ex) {
             Logger.getLogger(ConnServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -55,6 +56,7 @@ public class ConnServlet extends HttpServlet {
         session.setAttribute("manager", manager);
         session.setAttribute("orderDAO", orderDAO);
         session.setAttribute("deviceDAO", deviceDAO);
+        session.setAttribute("paymentDAO", paymentDAO);
 
     }
 

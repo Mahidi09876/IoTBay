@@ -27,6 +27,17 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>DeviceListServlet</servlet-name>
+        <servlet-class>controller.DeviceListServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DeviceListServlet</servlet-name>
+        <url-pattern>/DeviceListServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>controller.OrderServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -35,6 +46,17 @@
     <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/OrderServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PaymentServlet</servlet-name>
+        <servlet-class>controller.PaymentServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PaymentServlet</servlet-name>
+        <url-pattern>/PaymentServlet</url-pattern>
     </servlet-mapping>
 
 </web-app>
