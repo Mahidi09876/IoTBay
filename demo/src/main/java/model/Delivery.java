@@ -1,55 +1,49 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Delivery {
-    private int deliveryID;
-    private int orderID;
-    private int userID;
+    private String trackingId;
+    private String orderId;
+    private String userId;
     private String status;
-    private String address;
-    private LocalDateTime shippedDate;
-    private LocalDateTime estimatedArrivalDate;
-    private LocalDateTime arrivalDate;
+    private Date estimatedDeliveryDate;
+    private String carrier;
 
-    // Constructors
     public Delivery() {}
 
-    public Delivery(int deliveryID, int orderID, int userID, String status, String address,
-                    LocalDateTime shippedDate, LocalDateTime estimatedArrivalDate, LocalDateTime arrivalDate) {
-        this.deliveryID = deliveryID;
-        this.orderID = orderID;
-        this.userID = userID;
+    public Delivery(String trackingId, String orderId, String userId, String status, Date estimatedDeliveryDate, String carrier) {
+        this.trackingId = trackingId;
+        this.orderId = orderId;
+        this.userId = userId;
         this.status = status;
-        this.address = address;
-        this.shippedDate = shippedDate;
-        this.estimatedArrivalDate = estimatedArrivalDate;
-        this.arrivalDate = arrivalDate;
+        this.estimatedDeliveryDate = estimatedDeliveryDate;
+        this.carrier = carrier;
     }
 
     // Getters and Setters
-    public int getDeliveryID() {
-        return deliveryID;
+    public String getTrackingId() {
+        return trackingId;
     }
 
-    public void setDeliveryID(int deliveryID) {
-        this.deliveryID = deliveryID;
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public int getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getStatus() {
@@ -60,35 +54,19 @@ public class Delivery {
         this.status = status;
     }
 
-    public String getAddress() {
-        return address;
+    public Date getEstimatedDeliveryDate() {
+        return estimatedDeliveryDate;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
+        this.estimatedDeliveryDate = estimatedDeliveryDate;
     }
 
-    public LocalDateTime getShippedDate() {
-        return shippedDate;
+    public String getCarrier() {
+        return carrier;
     }
 
-    public void setShippedDate(LocalDateTime shippedDate) {
-        this.shippedDate = shippedDate;
-    }
-
-    public LocalDateTime getEstimatedArrivalDate() {
-        return estimatedArrivalDate;
-    }
-
-    public void setEstimatedArrivalDate(LocalDateTime estimatedArrivalDate) {
-        this.estimatedArrivalDate = estimatedArrivalDate;
-    }
-
-    public LocalDateTime getArrivalDate() {
-        return arrivalDate;
-    }
-
-    public void setArrivalDate(LocalDateTime arrivalDate) {
-        this.arrivalDate = arrivalDate;
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
     }
 }
