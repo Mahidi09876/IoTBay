@@ -134,4 +134,36 @@ public class UserProfileServlet extends HttpServlet {
             request.getRequestDispatcher("registerUser.jsp").forward(request, response);
         }
     }
+
+    /**
+     * Updates an existing user profile with data from the update form.
+     */
+    private void updateUser(HttpServletRequest request, HttpServletResponse response, UserDAO userDAO)
+            throws ServletException, IOException, SQLException {
+
+        // Retrieve updated user details from the request
+        int userID = Integer.parseInt(request.getParameter("userID"));
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String phone = request.getParameter("phoneNumber");
+        String address = request.getParameter("address");
+
+        // Create a new User object with updated data
+        User user = new User(name, email, password, phone, address);
+        user.setUserID(userID);
+
+        // Attempt to update the user in the database
+        boolean updated = userDAO.updateUser(user);
+
+        // Forward to the profile view or edit form depending on the outcome
+        if (updated) {
+            request.setAttribute("user", user);
+            request.setAttribute("message", "Profile updated.");
+            request.getRequestDispatcher("userProfile.jsp").forward(request, response);
+        } else {
+            request.setAttribute("error", "Failed to update profile.");
+            request.getRequestDispatcher("editUserProfile.jsp").forward(request, response);
+        }
+    }
 }
