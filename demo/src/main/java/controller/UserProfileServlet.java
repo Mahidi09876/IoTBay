@@ -187,4 +187,37 @@ public class UserProfileServlet extends HttpServlet {
             request.getRequestDispatcher("userProfile.jsp").forward(request, response);
         }
     }
+
+    /**
+     * Retrieves user data for editing and forwards the data to the edit form.
+     */
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response, UserDAO userDAO)
+            throws ServletException, IOException, SQLException {
+
+        // Get the userID parameter from the request and fetch the corresponding user
+        int userID = Integer.parseInt(request.getParameter("userID"));
+        User user = userDAO.getUserById(userID);
+
+        // If user exists, set the user object as an attribute and forward to the edit form
+        if (user != null) {
+            request.setAttribute("user", user);
+            request.getRequestDispatcher("editUserProfile.jsp").forward(request, response);
+        } else {
+            // If the user isn't found, redirect to the default profile page
+            response.sendRedirect("userProfile.jsp");
+        }
+    }
+
+    /**
+     * Generates a unique 5-digit user ID by checking the database for duplicates.
+     */
+    private int generateUniqueUserID(UserDAO userDAO) {
+        Random rand = new Random();
+        int userID;
+        // Loop until a generated userID does not exist in the database
+        do {
+            userID = 10000 + rand.nextInt(90000);
+        } while (userDAO.userIdExists(userID));
+        return userID;
+    }
 }
