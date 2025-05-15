@@ -166,4 +166,25 @@ public class UserProfileServlet extends HttpServlet {
             request.getRequestDispatcher("editUserProfile.jsp").forward(request, response);
         }
     }
+
+    /**
+     * Retrieves and displays a user's profile based on their userID.
+     */
+    private void viewUser(HttpServletRequest request, HttpServletResponse response, UserDAO userDAO)
+            throws ServletException, IOException, SQLException {
+
+        // Parse userID parameter and fetch user from database
+        int userID = Integer.parseInt(request.getParameter("userID"));
+        User user = userDAO.getUserById(userID);
+
+        // Forward to the profile JSP with user data if found
+        if (user != null) {
+            request.setAttribute("user", user);
+            request.getRequestDispatcher("userProfile.jsp").forward(request, response);
+        } else {
+            // If user is not found, display error message on profile page
+            request.setAttribute("error", "User not found.");
+            request.getRequestDispatcher("userProfile.jsp").forward(request, response);
+        }
+    }
 }
