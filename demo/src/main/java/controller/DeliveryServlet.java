@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -106,7 +107,7 @@ public class DeliveryServlet extends HttpServlet {
         try {
             String dateStr = request.getParameter("estimatedDeliveryDate");
             estimatedDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-        } catch (Exception e) {
+        } catch (ParseException e) {
             request.setAttribute("error", "Invalid delivery date.");
             request.getRequestDispatcher("addDelivery.jsp").forward(request, response);
             return;
@@ -139,7 +140,7 @@ public class DeliveryServlet extends HttpServlet {
         try {
             String dateStr = request.getParameter("estimatedDeliveryDate");
             estimatedDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-        } catch (Exception e) {
+        } catch (ParseException e) {
             request.setAttribute("error", "Invalid date.");
             request.getRequestDispatcher("editDelivery.jsp").forward(request, response);
             return;

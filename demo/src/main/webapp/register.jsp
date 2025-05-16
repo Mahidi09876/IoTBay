@@ -1,36 +1,34 @@
-<%@ page import="model.User" %>
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>IoTBay - Register</title>
+    <title>Register User</title>
 </head>
 <body>
-    <h1>Register</h1>
-    <form method="POST">
-        Name: <input type="text" name="name"><br>
-        Email: <input type="text" name="email"><br>
-        Password: <input type="password" name="password"><br>
-        Phone Number: <input type="text" name="phoneNumber"><br>
-        Address: <input type="text" name="address"><br>
-        <input type="submit" value="Register">
+    <h2>Register New User</h2>
+
+    <form action="UserProfileServlet" method="post">
+        <input type="hidden" name="action" value="register"/>
+
+        <label>Name:</label><br/>
+        <input type="text" name="name" required/><br/><br/>
+
+        <label>Email:</label><br/>
+        <input type="email" name="email" required/><br/><br/>
+
+        <label>Password:</label><br/>
+        <input type="password" name="password" required/><br/><br/>
+
+        <label>Phone Number:</label><br/>
+        <input type="text" name="phoneNumber" required/><br/><br/>
+
+        <label>Address:</label><br/>
+        <input type="text" name="address" required/><br/><br/>
+
+        <input type="submit" value="Register"/>
     </form>
 
-    <%
-        if (request.getMethod().equalsIgnoreCase("POST")) {
-            // Retrieve form data
-            String name = request.getParameter("name");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String address = request.getParameter("address");
-
-            // Create a User object (assuming you have a User class)
-            User user = new User(name, email, password, phoneNumber, address);
-
-            // Store the User object in the session
-            session.setAttribute("user", user);
-            response.sendRedirect("login.jsp");
-        }
-    %>
+    <p style="color:red;">
+        ${error != null ? error : ""}
+    </p>
 </body>
 </html>
