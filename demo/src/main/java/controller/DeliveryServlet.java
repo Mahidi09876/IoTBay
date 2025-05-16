@@ -124,4 +124,48 @@ public class DeliveryServlet extends HttpServlet {
             request.getRequestDispatcher("addDelivery.jsp").forward(request, response);
         }
     }
+
+    /**
+     * Updates an existing delivery record with new data.
+     */
+    private void updateDelivery(HttpServletRequest request, HttpServletResponse response, DeliveryDAO deliveryDAO)
+            throws ServletException, IOException, SQLException {
+
+        String trackingId = request.getParameter("trackingId");
+        String status = request.getParameter("status");
+        String carrier = request.getParameter("carrier");
+
+        // Parse delivery date
+        Date estimatedDate;
+        try {
+            String dateStr = request.getParameter("estimatedDeliveryDate");
+            estimatedDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+        } catch (Exception e) {
+            request.setAttribute("error", "Invalid date.");
+            request.getRequestDispatcher("editDelivery.jsp").forward(request, response);
+            return;
+        }
+
+        // Fetch existing delivery and update fields
+        Delivery d = deliveryDAO.getDeliveryByTrackingId(trackingId);
+        if (d != null) {
+            d.setStatus(status);
+            d.setCarrier(carrier);
+            d.setEstimatedDeliveryDate(estimatedDate);
+
+            boolean updated = deliveryDAO.updateDelivery(d);
+
+            if (updated) {
+                request.setAttribute("message", "Delivery updated.");
+                request.setAttribute("delivery", d);
+                request.getRequestDispatcher("deliveryDetails.jsp").forward(request, response);
+            } else {
+                request.setAttribute("error", "Update failed.");
+                request.getRequestDispatcher("editDelivery.jsp").forward(request, response);
+            }
+        } else {
+            request.setAttribute("error", "Delivery not found.");
+            request.getRequestDispatcher("editDelivery.jsp").forward(request, response);
+        }
+    }
 }
