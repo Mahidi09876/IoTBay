@@ -89,4 +89,39 @@ public class DeliveryServlet extends HttpServlet {
             throw new ServletException("Database fetch failed", e);
         }
     }
+
+    /**
+     * Creates a new delivery record based on form data.
+     */
+    private void createDelivery(HttpServletRequest request, HttpServletResponse response, DeliveryDAO deliveryDAO)
+            throws ServletException, IOException, SQLException {
+
+        String trackingId = request.getParameter("trackingId");
+        String orderId = request.getParameter("orderId");
+        String userId = request.getParameter("userId");
+        String status = request.getParameter("status");
+        String carrier = request.getParameter("carrier");
+
+        // Parse the delivery date
+        Date estimatedDate;
+        try {
+            String dateStr = request.getParameter("estimatedDeliveryDate");
+            estimatedDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+        } catch (Exception e) {
+            request.setAttribute("error", "Invalid delivery date.");
+            request.getRequestDispatcher("addDelivery.jsp").forward(request, response);
+            return;
+        }
+
+        Delivery d = new Delivery(trackingId, orderId, userId, status, estimatedDate, carrier);
+        boolean created = deliveryDAO.createDelivery(d);
+
+        if (created) {
+            request.setAttribute("message", "Delivery created.");
+            request.getRequestDispatcher("deliverySuccess.jsp").forward(request, response);
+        } else {
+            request.setAttribute("error", "Failed to create delivery.");
+            request.getRequestDispatcher("addDelivery.jsp").forward(request, response);
+        }
+    }
 }
