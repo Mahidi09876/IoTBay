@@ -1,8 +1,5 @@
 package controller;
 
-import model.dao.DeliveryDAO;
-import model.Delivery;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -16,6 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Delivery;
+import model.dao.DeliveryDAO;
 
 // @WebServlet("/DeliveryServlet")
 public class DeliveryServlet extends HttpServlet {
@@ -186,5 +185,18 @@ public class DeliveryServlet extends HttpServlet {
 
         // Refresh the delivery list
         viewAllDeliveries(request, response, deliveryDAO);
+    }
+
+    /**
+     * Displays all deliveries for a given user ID.
+     */
+    private void viewAllDeliveries(HttpServletRequest request, HttpServletResponse response, DeliveryDAO deliveryDAO)
+            throws ServletException, IOException, SQLException {
+
+        String userId = request.getParameter("userId");
+        List<Delivery> deliveries = deliveryDAO.getAllDeliveriesByUser(userId);
+
+        request.setAttribute("deliveries", deliveries);
+        request.getRequestDispatcher("trackDelivery.jsp").forward(request, response);
     }
 }
