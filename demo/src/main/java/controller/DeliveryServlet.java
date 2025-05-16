@@ -168,4 +168,23 @@ public class DeliveryServlet extends HttpServlet {
             request.getRequestDispatcher("editDelivery.jsp").forward(request, response);
         }
     }
+
+    /**
+     * Deletes a delivery by its tracking ID.
+     */
+    private void deleteDelivery(HttpServletRequest request, HttpServletResponse response, DeliveryDAO deliveryDAO)
+            throws ServletException, IOException, SQLException {
+
+        String trackingId = request.getParameter("trackingId");
+        boolean deleted = deliveryDAO.deleteDelivery(trackingId);
+
+        if (deleted) {
+            request.setAttribute("message", "Delivery deleted.");
+        } else {
+            request.setAttribute("error", "Failed to delete delivery.");
+        }
+
+        // Refresh the delivery list
+        viewAllDeliveries(request, response, deliveryDAO);
+    }
 }
